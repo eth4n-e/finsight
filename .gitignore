@@ -1,0 +1,7 @@
+# server ignores
+server/.env
+server/node_modules/*
+
+# client ignores
+client/.env
+client/node_modules/*

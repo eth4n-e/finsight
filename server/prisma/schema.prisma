@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model WatchlistItem {
+  id        String   @id @default(cuid())
+  ticker    String   @unique
+  addedAt   DateTime @default(now())
+}
+
+model PortfolioPosition {
+  id            String   @id @default(cuid())
+  ticker        String
+  shares        Float
+  purchasePrice Float
+  purchaseDate  DateTime @default(now())
+  closed        Boolean  @default(false)
+  closedAt      DateTime?
+  closePrice    Float?
+}
+
+model SimulatorBalance {
+  id        String   @id @default("singleton")
+  cash      Float    @default(100000)
+  updatedAt DateTime @updatedAt
+}
