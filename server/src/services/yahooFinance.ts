@@ -1,9 +1,13 @@
 import YahooFinance from 'yahoo-finance2'
 import { 
-    toOHLCVBar,
+    toOHLCV,
     rangeToInterval,
-    rangeToPeriod1
 } from '../utils/transforms.js'
+import type { 
+  QuoteResult, 
+  OHLCVBar, 
+  SearchResult 
+} from '../types/yahooFinance.js'
 
 const yahoo = new YahooFinance({
     suppressNotices: ["yahooSurvey"],
@@ -46,8 +50,8 @@ export const market = {
   async getHistory(ticker: string, start = '2025-01-30', end = '2026-01-30', interval = '1M'): Promise<OHLCVBar[]> {
     const bars = await yahoo.historical(ticker.toUpperCase(), {
       // TODO: may need to modify rangeToPeriod and create another helper to ensure start and end are in proper date format
-      period1:  rangeToPeriod(start),
-      period2:  rangeToPeriod(end),
+      period1:  start,
+      period2:  end,
       interval: rangeToInterval(interval),
     })
     return toOHLCV(bars)
