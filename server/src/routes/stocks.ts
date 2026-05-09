@@ -1,18 +1,13 @@
 import { Router } from 'express'
-import { massive } from '../services/massive.js'
-import { getRangeParams } from '../middleware/rangeParams.js'
+import { market } from '../services/yahooFinance.js'
 
 const router = Router()
 
-/*
- * KEEP IN MIND: stocks serves both the marketplace + watchlist - think of the stock as a resource and allow frontend to render as necessary
- */
-
 router.get('/search', async (req, res) => {
   try {
-    const { q } = req.query
-    if (!q || typeof q !== 'string') return res.status(400).json({ error: 'Missing query' })
-    const data = await massive.searchTickers(q)
+    const { ticker } = req.query
+    if (!ticker || typeof ticker !== 'string') return res.status(400).json({ error: 'Missing query' })
+    const data = await market.searchTickers(ticker)
     res.json(data)
   } catch (err) {
     res.status(500).json({ error: 'Search failed' })
@@ -21,17 +16,22 @@ router.get('/search', async (req, res) => {
 
 router.get('/:ticker/quote', async (req, res) => {
   try {
-    const data = await massive.getSnapshot(req.params.ticker)
+    console.log("Ticker --chk: ", req.params.ticker);
+    const data = await market.getQuote(req.params.ticker)
+    console.log("Data --chk: ", data);
     res.json(data)
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: 'Quote fetch failed' })
   }
 })
 
+// TODO: yahoo api switched to chart - accepts two date ranges
 router.get('/:ticker/history', async (req, res) => {
   try {
-    const { from, to, multiplier, timespan } = getRangeParams(req.query.range as string)
-    const data = await massive.getAggregates(req.params.ticker, from, to, multiplier, timespan)
+    let { interval, start, end } = req.query;
+    interval = (range as string) ?? '1M'
+    const data = await market.getHistory(req.params.ticker, start, end, interval)
     res.json(data)
   } catch (err) {
     res.status(500).json({ error: 'History fetch failed' })
@@ -39,3 +39,4 @@ router.get('/:ticker/history', async (req, res) => {
 })
 
 export default router
+

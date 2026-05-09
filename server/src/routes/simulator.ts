@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { PrismaClient } from '@prisma/client'
-import { massive } from '../services/massive.js'
+import { market } from '../services/yahooFinance.js'
 
 const router = Router()
 const prisma = new PrismaClient()
@@ -25,8 +25,8 @@ router.post('/buy', async (req, res) => {
   const { ticker, shares } = req.body
   if (!ticker || !shares) return res.status(400).json({ error: 'ticker and shares required' })
   try {
-    const snapshot: any = await massive.getSnapshot(ticker)
-    const price: number = snapshot?.ticker?.day?.c ?? snapshot?.ticker?.lastTrade?.p
+    const quote = await market.getQuote(ticker)
+    const price = quote.price
     if (!price) return res.status(400).json({ error: 'Could not fetch price' })
 
     const cost = price * shares
@@ -56,8 +56,8 @@ router.post('/sell', async (req, res) => {
   const totalShares = positions.reduce((sum, p) => sum + p.shares, 0)
   if (totalShares < shares) return res.status(400).json({ error: 'Not enough shares' })
 
-  const snapshot: any = await massive.getSnapshot(ticker)
-  const price: number = snapshot?.ticker?.day?.c ?? snapshot?.ticker?.lastTrade?.p
+  const quote = await market.getQuote(ticker)
+  const price = quote.price
   if (!price) return res.status(400).json({ error: 'Could not fetch price' })
 
   await prisma.$transaction([
@@ -74,3 +74,4 @@ router.post('/sell', async (req, res) => {
 })
 
 export default router
+
