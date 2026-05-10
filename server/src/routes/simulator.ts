@@ -1,9 +1,8 @@
 import { Router } from 'express'
-import { PrismaClient } from '@prisma/client'
 import { market } from '../services/yahooFinance.js'
+import { prisma } from '../lib/prisma.js'
 
 const router = Router()
-const prisma = new PrismaClient()
 
 async function getOrCreateBalance() {
   return prisma.simulatorBalance.upsert({

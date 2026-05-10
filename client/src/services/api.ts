@@ -1,3 +1,5 @@
+import type { TickerSearchResult, WatchlistItem } from '@/types'
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001'
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
@@ -11,7 +13,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 export const api = {
   // Watchlist
-  getWatchlist: () => request('/api/watchlist'),
+  getWatchlist: () => request<WatchlistItem[]>('/api/watchlist'),
   addToWatchlist: (ticker: string) =>
     request('/api/watchlist', { method: 'POST', body: JSON.stringify({ ticker }) }),
   removeFromWatchlist: (ticker: string) =>
@@ -21,8 +23,8 @@ export const api = {
   getQuote: (ticker: string) => request(`/api/stocks/${ticker}/quote`),
   getHistory: (ticker: string, range: string) =>
     request(`/api/stocks/${ticker}/history?range=${range}`),
-  searchTickers: (query: string) =>
-    request(`/api/stocks/search?q=${encodeURIComponent(query)}`),
+  searchTickers: (ticker: string) =>
+    request<TickerSearchResult[]>(`/api/stocks/search?ticker=${encodeURIComponent(ticker.toUpperCase())}`),
 
   // Simulator
   getPortfolio: () => request('/api/simulator/portfolio'),

@@ -1,7 +1,15 @@
+# general ignores
+node_modules/*
+dist/*
+.env
+.nvmrc
+
 # server ignores
 server/.env
 server/node_modules/*
+server/prisma/generated/*
 
 # client ignores
 client/.env
 client/node_modules/*
+client/dist/*

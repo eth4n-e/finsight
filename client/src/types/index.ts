@@ -23,6 +23,13 @@ export interface WatchlistItem {
   addedAt: string
 }
 
+export interface TickerSearchResult {
+  ticker: string
+  name: string
+  exchange: string
+  type: string
+}
+
 export interface PortfolioPosition {
   id: string
   ticker: string
