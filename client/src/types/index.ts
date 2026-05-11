@@ -20,9 +20,14 @@ export interface OHLCV {
 export interface WatchlistItem {
   id: string
   ticker: string
+  name: string
   addedAt: string
 }
 
+export interface StockDto {
+  ticker: string
+  name: string
+}
 export interface TickerSearchResult {
   ticker: string
   name: string

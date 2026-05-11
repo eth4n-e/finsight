@@ -7,7 +7,7 @@ import { useTickerHistory } from '@/hooks/useTickerHistory'
 import { useTickerSearch } from '@/hooks/useTickerSearch'
 import { useWatchlist } from '@/hooks/useWatchlist'
 import { useWatchlistSelection } from '@/hooks/useWatchlistSelection'
-import { TIME_RANGES, type TimeRange } from '@/types'
+import { TIME_RANGES, type TimeRange, StockDto } from '@/types'
 
 export default function StockWatcher() {
   const { watchlist, isLoading, error, refreshWatchlist } = useWatchlist()
@@ -37,10 +37,10 @@ export default function StockWatcher() {
   }, [selectedTicker, filteredWatchlist.length])
 
   // TODO: not sure if adding to watchlist is currently working - not seeing the ticker appear in the scrollable list
-  async function handleSearchResultAdd(ticker: string) {
-    await api.addToWatchlist(ticker)
+  async function handleSearchResultAdd(stock: StockDto) {
+    await api.addToWatchlist(stock)
     await refreshWatchlist()
-    selectTicker(ticker.toUpperCase())
+    selectTicker(stock.ticker.toUpperCase())
   }
 
   function handleSearchResultSelect(ticker: string) {

@@ -1,5 +1,5 @@
 import type { Ref } from 'react'
-import type { TickerSearchResult, WatchlistItem } from '@/types'
+import type { StockDto, TickerSearchResult, WatchlistItem } from '@/types'
 import { WatchlistTickerCard } from './WatchlistTickerCard'
 
 type Props = {
@@ -17,7 +17,7 @@ type Props = {
   isSearching: boolean
   searchError: string | null
   onSearchResultSelect: (ticker: string) => void
-  onSearchResultAdd: (ticker: string) => void
+  onSearchResultAdd: (stock: StockDto) => void
 }
 
 export function WatchlistSidebar({
@@ -87,7 +87,7 @@ export function WatchlistSidebar({
                       </button>
                       <button
                         type="button"
-                        onClick={() => onSearchResultAdd(result.ticker)}
+                        onClick={() => onSearchResultAdd({ticker: result.ticker, name: result.name})}
                         className="rounded border border-border px-2 py-1 text-xs text-slate-300 hover:bg-surface-3"
                       >
                         Add

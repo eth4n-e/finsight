@@ -1,4 +1,4 @@
-import type { OHLCV, TickerSearchResult, WatchlistItem } from '@/types'
+import type { OHLCV, StockDto, TickerSearchResult, WatchlistItem } from '@/types'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001'
 
@@ -14,8 +14,8 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 export const api = {
   // Watchlist
   getWatchlist: () => request<WatchlistItem[]>('/api/watchlist'),
-  addToWatchlist: (ticker: string) =>
-    request('/api/watchlist', { method: 'POST', body: JSON.stringify({ ticker }) }),
+  addToWatchlist: (stock: StockDto) =>
+    request('/api/watchlist', { method: 'POST', body: JSON.stringify({ ticker: stock.ticker, name: stock.name }) }),
   removeFromWatchlist: (ticker: string) =>
     request(`/api/watchlist/${ticker}`, { method: 'DELETE' }),
 
