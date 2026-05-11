@@ -5,7 +5,7 @@ import type {
   QuoteResult, 
   OHLCVBar, 
   SearchResult 
-} from '../types/yahooFinance.js'
+} from '../types/finance.js'
 
 const yahoo = new YahooFinance({
     suppressNotices: ["yahooSurvey"],
@@ -22,9 +22,7 @@ export const market = {
    * Used by: stocks/:ticker/quote, simulator buy/sell
    */
   async getQuote(ticker: string): Promise<QuoteResult> {
-    console.log("getQuote ticker --chk: ", ticker);
     const q = await yahoo.quote(ticker.toUpperCase())
-    console.log("Q --chk: ", q);
     return {
       ticker:        q.symbol,
       name:          q.longName ?? q.shortName ?? ticker,

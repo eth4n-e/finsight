@@ -22,6 +22,16 @@ export function isHistoryRange(value: string): value is HistoryRange {
   return (HISTORY_RANGES as readonly string[]).includes(value.toUpperCase())
 }
 
+export function validateHistoryRange(value: any) {
+  const raw = typeof value === 'string' ? value : '1M'
+  const range = raw.toUpperCase()
+  if (!isHistoryRange(range)) {
+    return { status: false, range: ""}
+  }
+
+  return { status: true, range }
+}
+
 /**
  * Maps range presets to Yahoo `chart()` window + granularity.
  */

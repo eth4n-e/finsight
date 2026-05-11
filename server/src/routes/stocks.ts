@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import { market } from '../services/yahooFinance.js'
-import { HISTORY_RANGES, isHistoryRange } from '../utils/historyRange.js'
+import { llm } from '../services/llm.js'
+import { HISTORY_RANGES, validateHistoryRange } from '../utils/historyRange.js'
+import { buildMarketContext } from '../utils/context.js'
 
 const router = Router()
 
@@ -29,13 +31,13 @@ router.get('/:ticker/quote', async (req, res) => {
 
 router.get('/:ticker/history', async (req, res) => {
   try {
-    const raw = typeof req.query.range === 'string' ? req.query.range : '1M'
-    const range = raw.toUpperCase()
-    if (!isHistoryRange(range)) {
+    const { status: isValid, range } = validateHistoryRange(req.query.range);
+    if (!isValid) {
       return res.status(400).json({
         error: `Invalid range. Use one of: ${HISTORY_RANGES.join(', ')}`,
       })
     }
+
     const data = await market.getHistory(req.params.ticker, range)
     res.json(data)
   } catch (err) {
@@ -43,6 +45,26 @@ router.get('/:ticker/history', async (req, res) => {
       return res.status(400).json({ error: err.message })
     }
     res.status(500).json({ error: 'History fetch failed' })
+  }
+})
+
+// TODO: figure out why range as query parameter was not seeming to work
+router.get('/:ticker/analysis', async (req, res) => {
+  try {
+    const { status: isValid, range } = validateHistoryRange(req.query.range);
+    if (!isValid) {
+      return res.status(400).json({
+        error: `Invalid range. Use one of: ${HISTORY_RANGES.join(', ')}`,
+      })
+    }
+
+    const context = await buildMarketContext(req.params.ticker, range)
+    const analysis = await llm.analyzePerformance(context);
+    console.log(analysis);
+    res.status(200);
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: 'Stock analysis failed' })
   }
 })
 

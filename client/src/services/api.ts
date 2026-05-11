@@ -25,6 +25,10 @@ export const api = {
     request<OHLCV[]>(
       `/api/stocks/${encodeURIComponent(ticker)}/history?range=${encodeURIComponent(range)}`,
     ),
+  getAnalysis: (ticker: string) => 
+    request(
+      `/api/stocks/${encodeURIComponent(ticker)}/analysis`
+    ),
   // TODO: add a method to also search for a ticker by name - leverage both in useTickerSearch hook
   searchTickers: (ticker: string) =>
     request<TickerSearchResult[]>(`/api/stocks/search?ticker=${encodeURIComponent(ticker.toUpperCase())}`),

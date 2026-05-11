@@ -20,6 +20,7 @@ type Props = {
   onSearchResultAdd: (stock: StockDto) => void
 }
 
+// TODO: list does not seem to be scrollable - grows uncontained
 export function WatchlistSidebar({
   items,
   selectedTicker,
@@ -39,6 +40,7 @@ export function WatchlistSidebar({
 }: Props) {
   const normalizedSearchQuery = searchQuery.trim()
 
+  // TODO: Integrate fuzzy search + searching by canonical name opposed to just ticker
   return (
     <aside className="flex min-h-0 flex-col gap-3">
       <div className="shrink-0 space-y-2">

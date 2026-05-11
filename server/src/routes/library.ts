@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { streamExplanation } from '../services/llm.js'
+// import { streamExplanation } from '../services/llm.js'
 
 const router = Router()
 
@@ -18,10 +18,10 @@ router.get('/topics', (_req, res) => {
   res.json(TOPICS)
 })
 
-router.get('/explain/:topicId', async (req, res) => {
-  const topic = TOPICS.find((t) => t.id === req.params.topicId)
-  if (!topic) return res.status(404).json({ error: 'Topic not found' })
-  await streamExplanation(`${topic.title} — ${topic.description}`, res)
-})
+// router.get('/explain/:topicId', async (req, res) => {
+//   const topic = TOPICS.find((t) => t.id === req.params.topicId)
+//   if (!topic) return res.status(404).json({ error: 'Topic not found' })
+//   await streamExplanation(`${topic.title} — ${topic.description}`, res)
+// })
 
 export default router

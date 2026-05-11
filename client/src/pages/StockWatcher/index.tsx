@@ -36,7 +36,6 @@ export default function StockWatcher() {
     el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }, [selectedTicker, filteredWatchlist.length])
 
-  // TODO: not sure if adding to watchlist is currently working - not seeing the ticker appear in the scrollable list
   async function handleSearchResultAdd(stock: StockDto) {
     await api.addToWatchlist(stock)
     await refreshWatchlist()

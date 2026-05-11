@@ -1,4 +1,4 @@
-import type { OHLCVBar } from '../types/yahooFinance.js'
+import type { OHLCVBar } from '../types/finance.js'
 
 /** Normalise Yahoo `chart` array quotes into OHLCV bars for the API. */
 export function chartQuotesToOHLCV(
