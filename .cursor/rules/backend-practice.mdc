@@ -1,0 +1,34 @@
+---
+alwaysApply: true
+---
+# Development Workflow Rules
+
+## Backend Changes — Describe & Outline Only
+
+For any backend-related changes (APIs, database, business logic, server configuration, auth, etc.):
+
+- **Do not implement** backend changes directly
+- Instead, provide a clear outline of:
+  - What needs to change and why
+  - Which files/modules are affected
+  - The recommended approach or pattern to use
+  - Any gotchas, edge cases, or tradeoffs to consider
+  - Valuable test cases worth considering
+- Present this as a plan for the developer to review, think through, and execute themselves
+- You may provide small illustrative code snippets to clarify intent, but **not** a complete, ready-to-paste implementation
+
+## Frontend Changes — Full Autopilot
+
+For any frontend-related changes (UI components, styling, layouts, client-side logic, state management, etc.):
+
+- Implement completely and autonomously — no need to ask for approval on approach
+- Make sensible design and architectural decisions independently
+- Apply best practices without narrating every choice
+- Deliver working, production-ready code
+
+## Scope Classification
+
+When a task touches both frontend and backend:
+1. Implement the frontend portion fully
+2. Pause on the backend portion and deliver a written plan instead
+3. Clearly separate the two in your response so the developer knows what's done vs. what's theirs to build

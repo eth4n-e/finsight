@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { market } from '../services/yahooFinance.js'
+import { HISTORY_RANGES, isHistoryRange } from '../utils/historyRange.js'
 
 const router = Router()
 
@@ -26,14 +27,21 @@ router.get('/:ticker/quote', async (req, res) => {
   }
 })
 
-// TODO: yahoo api switched to chart - accepts two date ranges
 router.get('/:ticker/history', async (req, res) => {
   try {
-    let { interval, start, end } = req.query;
-    interval = (range as string) ?? '1M'
-    const data = await market.getHistory(req.params.ticker, start, end, interval)
+    const raw = typeof req.query.range === 'string' ? req.query.range : '1M'
+    const range = raw.toUpperCase()
+    if (!isHistoryRange(range)) {
+      return res.status(400).json({
+        error: `Invalid range. Use one of: ${HISTORY_RANGES.join(', ')}`,
+      })
+    }
+    const data = await market.getHistory(req.params.ticker, range)
     res.json(data)
   } catch (err) {
+    if (err instanceof Error && err.message.startsWith('Invalid history range')) {
+      return res.status(400).json({ error: err.message })
+    }
     res.status(500).json({ error: 'History fetch failed' })
   }
 })

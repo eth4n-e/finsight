@@ -1,4 +1,4 @@
-import type { TickerSearchResult, WatchlistItem } from '@/types'
+import type { OHLCV, TickerSearchResult, WatchlistItem } from '@/types'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001'
 
@@ -22,7 +22,10 @@ export const api = {
   // Stocks
   getQuote: (ticker: string) => request(`/api/stocks/${ticker}/quote`),
   getHistory: (ticker: string, range: string) =>
-    request(`/api/stocks/${ticker}/history?range=${range}`),
+    request<OHLCV[]>(
+      `/api/stocks/${encodeURIComponent(ticker)}/history?range=${encodeURIComponent(range)}`,
+    ),
+  // TODO: add a method to also search for a ticker by name - leverage both in useTickerSearch hook
   searchTickers: (ticker: string) =>
     request<TickerSearchResult[]>(`/api/stocks/search?ticker=${encodeURIComponent(ticker.toUpperCase())}`),
 

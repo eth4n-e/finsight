@@ -6,12 +6,12 @@ router.get('/', async (_req, res) => {
     res.json(items);
 });
 router.post('/', async (req, res) => {
-    const { ticker } = req.body;
+    const { ticker, name } = req.body;
     if (!ticker)
         return res.status(400).json({ error: 'Ticker required' });
     try {
         const item = await prisma.watchlistItem.create({
-            data: { ticker: ticker.toUpperCase() },
+            data: { ticker: ticker.toUpperCase(), name },
         });
         res.status(201).json(item);
     }

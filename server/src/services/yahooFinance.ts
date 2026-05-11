@@ -1,8 +1,6 @@
 import YahooFinance from 'yahoo-finance2'
-import { 
-    toOHLCV,
-    rangeToInterval,
-} from '../utils/transforms.js'
+import { chartQuotesToOHLCV } from '../utils/transforms.js'
+import { isHistoryRange, resolveChartWindow, type HistoryRange } from '../utils/historyRange.js'
 import type { 
   QuoteResult, 
   OHLCVBar, 
@@ -44,17 +42,23 @@ export const market = {
   },
 
   /**
-   * OHLCV history for a given time range.
+   * OHLCV history for a UI range preset (uses Yahoo `chart` for intraday + daily).
    * Used by: stocks/:ticker/history
    */
-  async getHistory(ticker: string, start = '2025-01-30', end = '2026-01-30', interval = '1M'): Promise<OHLCVBar[]> {
-    const bars = await yahoo.historical(ticker.toUpperCase(), {
-      // TODO: may need to modify rangeToPeriod and create another helper to ensure start and end are in proper date format
-      period1:  start,
-      period2:  end,
-      interval: rangeToInterval(interval),
-    })
-    return toOHLCV(bars)
+  async getHistory(ticker: string, range: string): Promise<OHLCVBar[]> {
+    const key = range.toUpperCase()
+    if (!isHistoryRange(key)) {
+      throw new Error(`Invalid history range: ${range}`)
+    }
+    const { period1, period2, interval } = resolveChartWindow(key as HistoryRange)
+    const result = await yahoo.chart(ticker.toUpperCase(), {
+      period1,
+      period2,
+      interval,
+      return: 'array',
+    });
+    const quotes = result.quotes ?? []
+    return chartQuotesToOHLCV(quotes)
   },
 
   /**

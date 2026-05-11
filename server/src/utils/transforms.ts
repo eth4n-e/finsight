@@ -1,21 +1,25 @@
-import type { OHLCVBar } from "../types/yahooFinance.js"
+import type { OHLCVBar } from '../types/yahooFinance.js'
 
-export function toOHLCV(bars: Awaited<ReturnType<typeof yahoo.historical>>): OHLCVBar[] {
-  return bars.map((b) => ({
-    timestamp: b.date.getTime(),
-    open:   b.open   ?? 0,
-    high:   b.high   ?? 0,
-    low:    b.low    ?? 0,
-    close:  b.close  ?? 0,
-    volume: b.volume ?? 0,
-  }))
+/** Normalise Yahoo `chart` array quotes into OHLCV bars for the API. */
+export function chartQuotesToOHLCV(
+  quotes: Array<{
+    date: Date
+    open: number | null
+    high: number | null
+    low: number | null
+    close: number | null
+    volume: number | null
+  }>,
+): OHLCVBar[] {
+  return quotes
+    .filter((q) => q.open != null && q.high != null && q.low != null && q.close != null)
+    .map((q) => ({
+      timestamp: q.date.getTime(),
+      open: q.open as number,
+      high: q.high as number,
+      low: q.low as number,
+      close: q.close as number,
+      volume: q.volume ?? 0,
+    }))
+    .sort((a, b) => a.timestamp - b.timestamp)
 }
-
-export function rangeToInterval(range: string): '1d' | '1wk' | '1mo' {
-  range = range.toUpperCase();
-  if (range === '1D' || range === '1W') return '1d'
-  if (range === '1M' || range === '3M') return '1wk'
-  return '1mo'
-}
-
-// TODO: add date validation and conversion method

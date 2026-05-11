@@ -1,4 +1,4 @@
-export interface Stock {
+interface Stock {
   ticker: string
   name: string
   price: number
@@ -30,7 +30,7 @@ export interface TickerSearchResult {
   type: string
 }
 
-export interface PortfolioPosition {
+interface PortfolioPosition {
   id: string
   ticker: string
   shares: number
@@ -39,11 +39,13 @@ export interface PortfolioPosition {
   currentPrice?: number
 }
 
-export interface LibraryTopic {
+interface LibraryTopic {
   id: string
   title: string
   description: string
   category: string
 }
 
-export type TimeRange = '1D' | '1W' | '1M' | '3M' | '1Y'
+export type TimeRange = '1D' | '1W' | '1M' | '3M' | '1Y' | '2Y' | '5Y'
+
+export const TIME_RANGES: TimeRange[] = ['1D', '1W', '1M', '3M', '1Y', '2Y', '5Y']
