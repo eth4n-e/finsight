@@ -1,4 +1,11 @@
-import type { OHLCV, StockAnalysis, StockDto, TickerSearchResult, WatchlistItem } from '@/types'
+import type {
+  LibraryTopic,
+  OHLCV,
+  StockAnalysis,
+  StockDto,
+  TickerSearchResult,
+  WatchlistItem,
+} from '@/types'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001'
 
@@ -46,7 +53,7 @@ export const api = {
     request('/api/simulator/sell', { method: 'POST', body: JSON.stringify({ ticker, shares }) }),
 
   // Library
-  getTopics: () => request('/api/library/topics'),
+  getTopics: () => request<LibraryTopic[]>('/api/library/topics'),
   streamExplanation: (topicId: string): EventSource =>
     new EventSource(`${BASE_URL}/api/library/explain/${topicId}`),
 }

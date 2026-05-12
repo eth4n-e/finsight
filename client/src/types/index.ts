@@ -1,4 +1,4 @@
-interface Stock {
+export interface Stock {
   ticker: string
   name: string
   price: number
@@ -35,7 +35,7 @@ export interface TickerSearchResult {
   type: string
 }
 
-interface PortfolioPosition {
+export interface PortfolioPosition {
   id: string
   ticker: string
   shares: number
@@ -44,7 +44,7 @@ interface PortfolioPosition {
   currentPrice?: number
 }
 
-interface LibraryTopic {
+export interface LibraryTopic {
   id: string
   title: string
   description: string
@@ -52,6 +52,19 @@ interface LibraryTopic {
 }
 
 export type StockAnalysis = string
+export type LibraryViewMode = 'chat' | 'files' | 'reader'
+export type LibraryGraphMode = 'files' | 'graph'
+
+export interface LibraryNoteSummary {
+  id: string
+  topicId: string
+  title: string
+  excerpt: string
+  createdAt: string
+  readTime: string
+  tags: string[]
+  body: string
+}
 
 export type TimeRange = '1D' | '1W' | '1M' | '3M' | '1Y' | '2Y' | '5Y'
 
