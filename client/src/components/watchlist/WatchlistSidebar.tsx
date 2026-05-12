@@ -9,6 +9,8 @@ type Props = {
   searchQuery: string
   onSearchChange: (value: string) => void
   onSelectTicker: (ticker: string) => void
+  onRemoveTicker: (ticker: string) => void
+  removingTicker: string | null
   isLoading: boolean
   error: string | null
   onRefresh: () => void
@@ -28,6 +30,8 @@ export function WatchlistSidebar({
   searchQuery,
   onSearchChange,
   onSelectTicker,
+  onRemoveTicker,
+  removingTicker,
   isLoading,
   error,
   onRefresh,
@@ -132,6 +136,8 @@ export function WatchlistSidebar({
                     distanceFromSelected={distance}
                     isSelected={item.ticker === selectedTicker}
                     onSelect={() => onSelectTicker(item.ticker)}
+                    onRemove={() => onRemoveTicker(item.ticker)}
+                    isRemoving={removingTicker === item.ticker}
                   />
                 </li>
               )

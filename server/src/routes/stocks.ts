@@ -60,8 +60,7 @@ router.get('/:ticker/analysis', async (req, res) => {
 
     const context = await buildMarketContext(req.params.ticker, range)
     const analysis = await llm.analyzePerformance(context);
-    console.log(analysis);
-    res.status(200);
+    res.status(200).json(analysis);
   } catch (err) {
     console.log(err)
     res.status(500).json({ error: 'Stock analysis failed' })

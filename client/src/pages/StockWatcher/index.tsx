@@ -1,16 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import clsx from 'clsx'
 import { PriceChart, type PriceChartVariant } from '@/components/chart/PriceChart'
 import { WatchlistSidebar } from '@/components/watchlist/WatchlistSidebar'
 import { api } from '@/services/api'
+import { useRemoveTicker } from '@/hooks/useRemoveTicker'
 import { useTickerHistory } from '@/hooks/useTickerHistory'
+import { useTickerAnalysis } from '@/hooks/useTickerAnalysis'
 import { useTickerSearch } from '@/hooks/useTickerSearch'
 import { useWatchlist } from '@/hooks/useWatchlist'
 import { useWatchlistSelection } from '@/hooks/useWatchlistSelection'
 import { TIME_RANGES, type TimeRange, StockDto } from '@/types'
 
 export default function StockWatcher() {
-  const { watchlist, isLoading, error, refreshWatchlist } = useWatchlist()
+  const { watchlist, isLoading, error, refreshWatchlist, removeWatchlistItem } = useWatchlist()
   const {
     searchQuery,
     setSearchQuery,
@@ -27,6 +31,12 @@ export default function StockWatcher() {
     selectedTicker,
     chartRange,
   )
+  const {
+    analysis,
+    isLoading: analysisLoading,
+    error: analysisError,
+  } = useTickerAnalysis(selectedTicker, chartRange)
+  const { onRemoveTicker, removingTicker } = useRemoveTicker(refreshWatchlist, removeWatchlistItem)
 
   const listRef = useRef<HTMLDivElement>(null)
 
@@ -64,6 +74,8 @@ export default function StockWatcher() {
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             onSelectTicker={selectTicker}
+            onRemoveTicker={onRemoveTicker}
+            removingTicker={removingTicker}
             isLoading={isLoading}
             error={error}
             onRefresh={refreshWatchlist}
@@ -170,12 +182,111 @@ export default function StockWatcher() {
           aria-label="Recent performance analysis"
           className="flex min-h-[200px] flex-col rounded-xl border border-border bg-surface-1/80 p-4 lg:col-span-1 lg:min-h-0"
         >
-          <h2 className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Analysis</h2>
-          <div className="flex flex-1 flex-col items-center justify-center rounded-lg border border-dashed border-border/80 bg-surface-2/50 px-4 py-6 text-center">
-            <p className="text-sm font-medium text-slate-400">Summary</p>
-            <p className="mt-1 text-xs text-slate-500">
-              A short summary of recent moves and context will show here.
-            </p>
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <h2 className="text-xs font-medium uppercase tracking-wider text-slate-500">Analysis</h2>
+            {selectedTicker ? (
+              <span className="rounded-full border border-border bg-surface-2 px-2 py-0.5 text-[11px] text-slate-400">
+                {selectedTicker} · {chartRange}
+              </span>
+            ) : null}
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto rounded-lg border border-border/80 bg-surface-2/50 px-4 py-4">
+            {!selectedTicker ? (
+              <div className="flex h-full flex-col items-center justify-center text-center">
+                <p className="text-sm font-medium text-slate-400">No ticker selected</p>
+                <p className="mt-1 text-xs text-slate-500">
+                  Choose a stock from the watchlist to load an AI summary for the selected range.
+                </p>
+              </div>
+            ) : analysisLoading ? (
+              <div className="flex h-full flex-col items-center justify-center text-center">
+                <p className="text-sm font-medium text-slate-300">Generating analysis...</p>
+                <p className="mt-1 text-xs text-slate-500">
+                  Pulling recent performance context for {selectedTicker}.
+                </p>
+              </div>
+            ) : analysisError ? (
+              <div className="flex h-full flex-col items-center justify-center text-center">
+                <p className="text-sm font-medium text-accent-red">Could not load analysis</p>
+                <p className="mt-1 text-xs text-slate-500">{analysisError}</p>
+              </div>
+            ) : !analysis?.trim() ? (
+              <div className="flex h-full flex-col items-center justify-center text-center">
+                <p className="text-sm font-medium text-slate-400">No analysis available</p>
+                <p className="mt-1 text-xs text-slate-500">
+                  Try a different ticker or time range to request a new summary.
+                </p>
+              </div>
+            ) : (
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  h1: ({ node, ...props }) => (
+                    <h3 className="text-base font-semibold text-slate-100" {...props} />
+                  ),
+                  h2: ({ node, ...props }) => (
+                    <h4 className="text-sm font-semibold text-slate-100" {...props} />
+                  ),
+                  h3: ({ node, ...props }) => (
+                    <h5 className="text-sm font-semibold text-slate-200" {...props} />
+                  ),
+                  p: ({ node, ...props }) => (
+                    <p className="text-sm leading-6 text-slate-300" {...props} />
+                  ),
+                  ul: ({ node, ...props }) => (
+                    <ul className="list-disc space-y-2 pl-5 text-sm leading-6 text-slate-300" {...props} />
+                  ),
+                  ol: ({ node, ...props }) => (
+                    <ol className="list-decimal space-y-2 pl-5 text-sm leading-6 text-slate-300" {...props} />
+                  ),
+                  li: ({ node, ...props }) => <li className="marker:text-slate-500" {...props} />,
+                  strong: ({ node, ...props }) => <strong className="font-semibold text-slate-100" {...props} />,
+                  a: ({ node, ...props }) => (
+                    <a
+                      className="text-accent-blue underline decoration-accent-blue/40 underline-offset-2 hover:text-blue-300"
+                      target="_blank"
+                      rel="noreferrer"
+                      {...props}
+                    />
+                  ),
+                  blockquote: ({ node, ...props }) => (
+                    <blockquote
+                      className="border-l-2 border-border pl-4 italic text-slate-400"
+                      {...props}
+                    />
+                  ),
+                  code: ({ node, className, children, ...props }) => (
+                    <code
+                      className={clsx(
+                        'rounded bg-surface-1 px-1.5 py-0.5 font-mono text-xs text-slate-200',
+                        className,
+                      )}
+                      {...props}
+                    >
+                      {children}
+                    </code>
+                  ),
+                  pre: ({ node, ...props }) => (
+                    <pre
+                      className="overflow-x-auto rounded-lg border border-border bg-surface-1 p-3 text-xs text-slate-200"
+                      {...props}
+                    />
+                  ),
+                  table: ({ node, ...props }) => (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full border-collapse text-left text-sm text-slate-300" {...props} />
+                    </div>
+                  ),
+                  thead: ({ node, ...props }) => <thead className="border-b border-border text-slate-200" {...props} />,
+                  tbody: ({ node, ...props }) => <tbody className="divide-y divide-border/70" {...props} />,
+                  tr: ({ node, ...props }) => <tr className="align-top" {...props} />,
+                  th: ({ node, ...props }) => <th className="px-3 py-2 font-medium" {...props} />,
+                  td: ({ node, ...props }) => <td className="px-3 py-2" {...props} />,
+                }}
+              >
+                {analysis}
+              </ReactMarkdown>
+            )}
           </div>
         </section>
       </div>

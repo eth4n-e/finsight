@@ -23,10 +23,17 @@ export function useWatchlist() {
     loadWatchlist()
   }, [loadWatchlist])
 
+  const removeWatchlistItem = useCallback((ticker: string) => {
+    setWatchlist((currentWatchlist) =>
+      currentWatchlist.filter((item) => item.ticker !== ticker.toUpperCase()),
+    )
+  }, [])
+
   return {
     watchlist,
     isLoading,
     error,
     refreshWatchlist: loadWatchlist,
+    removeWatchlistItem,
   }
 }

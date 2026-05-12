@@ -6,7 +6,6 @@ const navItems = [
   { to: '/watcher',     label: 'Watcher'     },
   { to: '/library',     label: 'Library'     },
   { to: '/simulator',   label: 'Simulator'   },
-  { to: '/marketplace', label: 'Marketplace' },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {
