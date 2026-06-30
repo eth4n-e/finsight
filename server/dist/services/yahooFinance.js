@@ -13,9 +13,7 @@ export const market = {
      * Used by: stocks/:ticker/quote, simulator buy/sell
      */
     async getQuote(ticker) {
-        console.log("getQuote ticker --chk: ", ticker);
         const q = await yahoo.quote(ticker.toUpperCase());
-        console.log("Q --chk: ", q);
         return {
             ticker: q.symbol,
             name: q.longName ?? q.shortName ?? ticker,
