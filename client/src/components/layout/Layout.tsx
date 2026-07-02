@@ -5,7 +5,6 @@ import clsx from 'clsx'
 const navItems = [
   { to: '/watcher',     label: 'Watcher'     },
   { to: '/library',     label: 'Library'     },
-  { to: '/simulator',   label: 'Simulator'   },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {

@@ -1,6 +1,6 @@
 import Groq from "groq-sdk";
 import type { Response } from 'express'
-import { StockContext } from '../types/llm'
+import { StockContext } from '../../types/llm'
 
 const client = new Groq({ apiKey: process.env.GROQ_API_KEY })
 

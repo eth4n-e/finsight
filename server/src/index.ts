@@ -5,7 +5,6 @@ import { createServer } from 'http'
 import { setupWebSocket } from './ws/priceSocket.js'
 import stockRoutes from './routes/stocks.js'
 import watchlistRoutes from './routes/watchlist.js'
-import simulatorRoutes from './routes/simulator.js'
 import libraryRoutes from './routes/library.js'
 
 const app = express()
@@ -18,7 +17,6 @@ app.get('/health', (_req, res) => res.json({ status: 'ok' }))
 
 app.use('/api/stocks', stockRoutes)
 app.use('/api/watchlist', watchlistRoutes)
-app.use('/api/simulator', simulatorRoutes)
 app.use('/api/library', libraryRoutes)
 
 setupWebSocket(httpServer)

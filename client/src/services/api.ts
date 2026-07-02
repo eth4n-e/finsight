@@ -36,21 +36,16 @@ export const api = {
   getHistory: (ticker: string, range: string) =>
     request<OHLCV[]>(
       `/api/stocks/${encodeURIComponent(ticker)}/history?range=${encodeURIComponent(range)}`,
+      { method: 'GET'}
     ),
   getAnalysis: (ticker: string, range: string) => 
     request<StockAnalysis>(
-      `/api/stocks/${encodeURIComponent(ticker)}/analysis?range=${encodeURIComponent(range)}`
+      `/api/stocks/${encodeURIComponent(ticker)}/analysis?range=${encodeURIComponent(range)}`,
+      { method: 'GET'}
     ),
   // TODO: add a method to also search for a ticker by name - leverage both in useTickerSearch hook
   searchTickers: (ticker: string) =>
     request<TickerSearchResult[]>(`/api/stocks/search?ticker=${encodeURIComponent(ticker.toUpperCase())}`),
-
-  // Simulator
-  getPortfolio: () => request('/api/simulator/portfolio'),
-  buyStock: (ticker: string, shares: number) =>
-    request('/api/simulator/buy', { method: 'POST', body: JSON.stringify({ ticker, shares }) }),
-  sellStock: (ticker: string, shares: number) =>
-    request('/api/simulator/sell', { method: 'POST', body: JSON.stringify({ ticker, shares }) }),
 
   // Library
   getTopics: () => request<LibraryTopic[]>('/api/library/topics'),

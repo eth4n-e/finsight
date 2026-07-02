@@ -1,11 +1,11 @@
 import YahooFinance from 'yahoo-finance2'
-import { chartQuotesToOHLCV } from '../utils/transforms.js'
-import { isHistoryRange, resolveChartWindow, type HistoryRange } from '../utils/historyRange.js'
+import { chartQuotesToOHLCV } from '../../utils/transforms.js'
+import { isHistoryRange, resolveChartWindow, type HistoryRange } from '../../utils/historyRange.js'
 import type { 
   QuoteResult, 
   OHLCVBar, 
   SearchResult 
-} from '../types/finance.js'
+} from '../../types/finance.js'
 
 const yahoo = new YahooFinance({
     suppressNotices: ["yahooSurvey"],

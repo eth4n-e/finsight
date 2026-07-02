@@ -1,8 +1,7 @@
 import { Router } from 'express'
-import { market } from '../services/yahooFinance.js'
-import { llm } from '../services/llm.js'
+import { market } from '../services/adapters/yahooFinance'
+import { analysisService } from '../services/orchestrators/analysis'
 import { HISTORY_RANGES, validateHistoryRange } from '../utils/historyRange.js'
-import { buildMarketContext } from '../utils/context.js'
 
 const router = Router()
 
@@ -58,8 +57,8 @@ router.get('/:ticker/analysis', async (req, res) => {
       })
     }
 
-    const context = await buildMarketContext(req.params.ticker, range)
-    const analysis = await llm.analyzePerformance(context);
+    const analysis = await analysisService.getAnalysis(req.params.ticker, range);
+
     res.status(200).json(analysis);
   } catch (err) {
     console.log(err)
