@@ -21,7 +21,7 @@ app.use('/api/library', libraryRoutes)
 
 setupWebSocket(httpServer)
 
-const PORT = process.env.PORT ?? 3001
+const PORT = process.env.SERVER_PORT ?? 3001
 httpServer.listen(PORT, () => {
   console.log(`Finsight server running on http://localhost:${PORT}`)
 })

@@ -21,11 +21,11 @@ services:
       watch:
         # Sync changes to the server container
         - action: sync
-          path: ./src
+          path: ./server/src
           target: /app/src
         # Rebuild image if dependencies change
         - action: rebuild
-          path: package.json
+          path: ./server/package.json
     container_name: finsight-server
     restart: unless-stopped
     depends_on:

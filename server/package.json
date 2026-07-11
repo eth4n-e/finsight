@@ -17,6 +17,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@gnews-io/gnews-io-js": "^3.0.0",
     "@prisma/adapter-better-sqlite3": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "cors": "^2.8.5",
@@ -24,6 +25,7 @@
     "express": "^4.19.2",
     "groq-sdk": "^1.2.0",
     "memjs": "^1.3.2",
+    "newsapi": "^2.4.1",
     "tsx": "^4.16.2",
     "ws": "^8.18.0",
     "yahoo-finance2": "^3.14.0"

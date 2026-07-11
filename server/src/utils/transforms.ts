@@ -23,3 +23,8 @@ export function chartQuotesToOHLCV(
     }))
     .sort((a, b) => a.timestamp - b.timestamp)
 }
+
+/** Converts news keywords into query format */
+// export function keywordsToQueryFormat(keywords: string[]) {
+
+// }

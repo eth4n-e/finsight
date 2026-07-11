@@ -1,3 +1,3 @@
 import { Client } from 'memjs'
 
-export const cache = Client.create(process.env.CACHE_SERVER);
+export const cacheClient = Client.create(`${process.env.CACHE_HOST}:${process.env.CACHE_PORT}`);

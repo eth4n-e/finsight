@@ -22,7 +22,7 @@ When analyzing a stock's performance:
 - Never give investment recommendations
 `
 
-export const llm = {
+export const llmAdapter = {
   async getGroqChatCompletion() {
     return client.chat.completions.create({
       messages: [
@@ -36,6 +36,9 @@ export const llm = {
   },
 
   async analyzePerformance(context: StockContext): Promise<string> {
+    console.log("context --chk: ", JSON.stringify(context));
+    // TODO: develop a better way to format the context than JSON stringify - maybe create a formatter for each adapter (e.g. finance formatter, news formatter, etc.)
+
     const response = await client.chat.completions.create({
       messages: [
         {
@@ -48,7 +51,7 @@ export const llm = {
         },
       ],
       model: "openai/gpt-oss-120b",
-    })
+    });
 
     return response.choices[0].message.content ?? "No summary today, sorry!";
   }

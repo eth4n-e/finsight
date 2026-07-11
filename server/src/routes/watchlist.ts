@@ -1,10 +1,10 @@
 import { Router } from 'express'
-import { prisma } from '../lib/prisma.js'
+import { prismaClient } from '../lib/prisma.js'
 
 const router = Router()
 
 router.get('/', async (_req, res) => {
-  const items = await prisma.watchlistItem.findMany({ orderBy: { addedAt: 'desc' } })
+  const items = await prismaClient.watchlistItem.findMany({ orderBy: { addedAt: 'desc' } })
   res.json(items)
 })
 
@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
   const { ticker, name } = req.body
   if (!ticker) return res.status(400).json({ error: 'Ticker required' })
   try {
-    const item = await prisma.watchlistItem.create({
+    const item = await prismaClient.watchlistItem.create({
       data: { ticker: ticker.toUpperCase(), name },
     })
     res.status(201).json(item)
@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
 })
 
 router.delete('/:ticker', async (req, res) => {
-  await prisma.watchlistItem.deleteMany({
+  await prismaClient.watchlistItem.deleteMany({
     where: { ticker: req.params.ticker.toUpperCase() },
   })
   res.status(204).end()

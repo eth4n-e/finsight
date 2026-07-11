@@ -1,14 +1,14 @@
-import { cache } from '@/lib/cache'
+import { cacheClient } from '@/lib/cache'
 
 export const cacheGet = async <T>(key: string) => {
-    const value = await cache.get(key);
-    return value ?? null;
+    const { value } = await cacheClient.get(key);
+    return value ?? null
 }
 
 export const cacheSet = async (key: string, value: string) => {
-    await cache.set(key, value);
+    await cacheClient.set(key, value);
 }
 
 export const cacheRemove = async (key: string) => {
-    await cache.delete(key);
+    await cacheClient.delete(key);
 }

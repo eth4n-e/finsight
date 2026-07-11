@@ -7,7 +7,7 @@ import type {
   SearchResult 
 } from '../../types/finance.js'
 
-const yahoo = new YahooFinance({
+const financeClient = new YahooFinance({
     suppressNotices: ["yahooSurvey"],
 });
 
@@ -16,13 +16,13 @@ const yahoo = new YahooFinance({
 // Public interface — same shape the rest of the app expects
 // ---------------------------------------------------------------------------
 
-export const market = {
+export const financeAdapter = {
   /**
    * Current quote for a single ticker.
    * Used by: stocks/:ticker/quote, simulator buy/sell
    */
   async getQuote(ticker: string): Promise<QuoteResult> {
-    const q = await yahoo.quote(ticker.toUpperCase())
+    const q = await financeClient.quote(ticker.toUpperCase())
     return {
       ticker:        q.symbol,
       name:          q.longName ?? q.shortName ?? ticker,
@@ -49,7 +49,7 @@ export const market = {
       throw new Error(`Invalid history range: ${range}`)
     }
     const { period1, period2, interval } = resolveChartWindow(key as HistoryRange)
-    const result = await yahoo.chart(ticker.toUpperCase(), {
+    const result = await financeClient.chart(ticker.toUpperCase(), {
       period1,
       period2,
       interval,
@@ -64,7 +64,7 @@ export const market = {
    * Used by: stocks/search
    */
   async searchTickers(query: string): Promise<SearchResult[]> {
-    const res = await yahoo.search(query)
+    const res = await financeClient.search(query)
     return (res.quotes ?? [])
       .filter((q) => q.isYahooFinance)
       .slice(0, 10)

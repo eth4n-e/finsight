@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { market } from '../services/adapters/yahooFinance'
+import { financeAdapter } from '../services/adapters/yahooFinance'
 import { analysisService } from '../services/orchestrators/analysis'
 import { HISTORY_RANGES, validateHistoryRange } from '../utils/historyRange.js'
 
@@ -9,7 +9,7 @@ router.get('/search', async (req, res) => {
   try {
     const { ticker } = req.query
     if (!ticker || typeof ticker !== 'string') return res.status(400).json({ error: 'Missing query' })
-    const data = await market.searchTickers(ticker)
+    const data = await financeAdapter.searchTickers(ticker)
     res.json(data)
   } catch (err) {
     res.status(500).json({ error: 'Search failed' })
@@ -19,7 +19,7 @@ router.get('/search', async (req, res) => {
 router.get('/:ticker/quote', async (req, res) => {
   try {
     console.log("Ticker --chk: ", req.params.ticker);
-    const data = await market.getQuote(req.params.ticker)
+    const data = await financeAdapter.getQuote(req.params.ticker)
     console.log("Data --chk: ", data);
     res.json(data)
   } catch (err) {
@@ -37,7 +37,7 @@ router.get('/:ticker/history', async (req, res) => {
       })
     }
 
-    const data = await market.getHistory(req.params.ticker, range)
+    const data = await financeAdapter.getHistory(req.params.ticker, range)
     res.json(data)
   } catch (err) {
     if (err instanceof Error && err.message.startsWith('Invalid history range')) {
